@@ -1,0 +1,4 @@
+Test Scala SQL DSL.
+Do not use - this is just play code.
+Use ScalaQuery or Squeryl instead.
+
