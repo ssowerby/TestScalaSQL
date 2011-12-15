@@ -2,7 +2,8 @@ Test Scala SQL DSL.
 Do not use - this is just play code.
 Use ScalaQuery or Squeryl instead.
 
-This an attempt to explore a SQL library which provides the following:
+This is an attempt to explore a SQL library which provides the following:
+
    * As close to real SQL as possible
    * Not an ORM, just a convenient way to build and execute SQL
    * Type-safe selectors and constraints
