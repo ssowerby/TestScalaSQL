@@ -58,10 +58,24 @@ class TestSqlExpansion extends FunSuite with ShouldMatchers {
       sql.params should be (Nil)
    }
 
-   test("outer join expanded") {
+   test("inner join expanded") {
       val sel = select(TEST.C1,TEST2.C5) from (TEST join TEST2 on (TEST.C1:=TEST2.C4))
       val sql = sel.toSql(exp)
       sql.sql should equal ("select TEST.C1,TEST2.C5 from TEST inner join TEST2 on (TEST.C1 = TEST2.C4)")
+      sql.params should be (Nil)
+   }
+
+   test("left outer join expanded") {
+      val sel = select(TEST.C1,TEST2.C5) from (TEST leftOuterJoin TEST2 on (TEST.C1:=TEST2.C4))
+      val sql = sel.toSql(exp)
+      sql.sql should equal ("select TEST.C1,TEST2.C5 from TEST left outer join TEST2 on (TEST.C1 = TEST2.C4)")
+      sql.params should be (Nil)
+   }
+
+   test("right outer join expanded") {
+      val sel = select(TEST.C1,TEST2.C5) from (TEST rightOuterJoin TEST2 on (TEST.C1:=TEST2.C4))
+      val sql = sel.toSql(exp)
+      sql.sql should equal ("select TEST.C1,TEST2.C5 from TEST right outer join TEST2 on (TEST.C1 = TEST2.C4)")
       sql.params should be (Nil)
    }
 
