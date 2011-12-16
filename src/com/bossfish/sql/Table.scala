@@ -9,13 +9,14 @@ class AliasedColumn[T]( val table:Table, val alias:String, val column:Column[T] 
 }
 
 
-class TableReference[T <: Table]( val table:T, val alias:String ) extends SqlFragment
+class TableReference[T <: Table]( val table:T, alias:Option[String] = None ) extends SqlFragment
 {
-   def toSql( exp:SqlExpander ) = exp.optionalString("", table.schema, ".") +  table.name + " " + alias
+   def toSql( exp:SqlExpander ) = exp.optionalString("", table.schema, ".") +  table.name + exp.optionalString(" ", alias, "")
 
    def join( ref:Join#Ref ) = new InnerJoin(this, ref, None)
    def leftOuterJoin( ref:Join#Ref ) = new OuterJoin(this, ref, None, "left outer")
    def rightOuterJoin( ref:Join#Ref ) = new OuterJoin(this, ref, None, "right outer")
+   def aliasForPrefix:String = alias.getOrElse(table.name)
 }
 
 

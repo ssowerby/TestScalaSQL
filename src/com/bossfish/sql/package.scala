@@ -1,7 +1,5 @@
 package com.bossfish {
 
-   import sql._
-
    package object sql  {
 
       implicit object IntIsNumeric extends SqlType[Int] with SqlComparable[Int] with SqlNumeric[Int]
@@ -24,9 +22,9 @@ package com.bossfish {
 
       private def generateAlias( col:Column[_] ) : String = {
          val ref = currentTable.get()
-         val alias = if (ref == null) col.table.name else ref.alias
-         currentTable.remove
-         return alias
+         val alias = if (ref == null) col.table.name else ref.aliasForPrefix
+         currentTable.remove()
+         alias
       }
 
       implicit def followReference[T <: Table]( ref:TableReference[T] ) : T = {
@@ -39,7 +37,7 @@ package com.bossfish {
   
       implicit def makeValueExpr[T:SqlType]( value:T ) : Expr[T] = new ValueExpr[T](value)
 
-      implicit def makeOptionValueExpr[T:SqlType]( value:T ) : Expr[Option[T]] = new ValueExpr[Option[T]](Some(value))
+      //implicit def makeOptionValueExpr[T:SqlType]( value:T ) : Expr[Option[T]] = new ValueExpr[Option[T]](Some(value))
 
       
       implicit def valueToSelector[E]( implicit $t:SqlType[E], extractor:ResultExtractor[E] ) : SelectorMaker[E,E] = new SelectorMaker[E,E] {
@@ -69,7 +67,7 @@ package com.bossfish {
       }
       
 
-      implicit def makeReference[T<:Table]( table:T ) = new TableReference[T](table,table.name)
+      implicit def makeReference[T<:Table]( table:T ) = new TableReference[T](table)
 
       implicit def paramValueTupleToParameterBinding[T]( tuple:(Parameter[T],Any) ) = ParameterBinding[T](tuple._1, tuple._2.asInstanceOf[T])
 
@@ -78,7 +76,7 @@ package com.bossfish {
 
      def parameter[T]( ctype:ColumnType[T] ) = new Parameter[T]()
 
-     def alias[T <: Table]( table:T, alias:String ) = new TableReference[T](table, alias)
+     def alias[T <: Table]( table:T, alias:String ) = new TableReference[T](table, Some(alias))
 
    }
 
